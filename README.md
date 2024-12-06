@@ -1,4 +1,4 @@
-# flutter_barcode_scanner
+# flutter_barcode_reader
 
 A plugin for Flutter apps that adds barcode scanning support on both Android and iOS.
 
@@ -62,7 +62,7 @@ After making the changes in Android ans iOS add flutter_barcode_scanner to `pubs
 ```  
 dependencies:
   ...
-  flutter_barcode_scanner: ^2.0.0
+  flutter_barcode_reader: ^0.0.1
 ```
 
 ### One time scan
@@ -115,11 +115,4 @@ would :heart: to see any contribution, give :star:  if you like
 
 ### Contact:
 
-
-<p>
-<a href="https://github.com/AmolGangadhare"><img src="https://github.com/AmolGangadhare/MyProfileRepo/blob/master/git_hub_logo.png" width="32" height="33" style="max-width:100%;"></a>
-<a href="https://stackoverflow.com/users/9823185/amol-gangadhare" rel="nofollow"><img src="https://github.com/AmolGangadhare/MyProfileRepo/blob/master/stack_o_logo.svg" width="36" height="36" style="max-width:100%;"></a>
-<a href="https://www.linkedin.com/in/amolgangadhare/" rel="nofollow"><img src="https://github.com/AmolGangadhare/MyProfileRepo/blob/master/linked_in_logo.svg" width="36" height="36" style="max-width:100%;"></a>
-</p>
-
-E-mail: amol.gangadhare@gmail.com
+E-mail: mr.fathullah.asad@gmail.com
