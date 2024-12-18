@@ -70,14 +70,14 @@ dependencies:
 1. You need to import the package first.
 
 ```
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter_barcode_reader/flutter_barcode_reader.dart';
 ```
 
     
 2. Then use the `scanBarcode` method to access barcode scanning.
     
 ```
-String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+String barcodeScanRes = await FlutterBarcodeReader.scanBarcode(
                                                     COLOR_CODE, 
                                                     CANCEL_BUTTON_TEXT, 
                                                     isShowFlashIcon, 
@@ -98,13 +98,13 @@ Here in `scanBarcode`,
  NOTE: Currently, `scanMode` is just to show the graphics overlay for barcode and QR. Any of this mode selected will scan both QR and barcode. 
 
 ### Continuous scan
-* If you need to scan barcodes continuously without closing camera use `FlutterBarcodeScanner.getBarcodeStreamReceiver`
-params will be same like `FlutterBarcodeScanner.scanBarcode`
+* If you need to scan barcodes continuously without closing camera use `FlutterBarcodeReader.getBarcodeStreamReceiver`
+params will be same like `FlutterBarcodeReader.scanBarcode`
 e.g. 
 
 
 ```
-FlutterBarcodeScanner.getBarcodeStreamReceiver("#ff6666", "Cancel", false, ScanMode.DEFAULT)
+FlutterBarcodeReader.getBarcodeStreamReceiver("#ff6666", "Cancel", false, ScanMode.DEFAULT)
          .listen((barcode) { 
          /// barcode to be used
          });
