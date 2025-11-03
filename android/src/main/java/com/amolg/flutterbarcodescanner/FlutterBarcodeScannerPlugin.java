@@ -28,7 +28,6 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.ActivityResultListener;
 import io.flutter.plugin.common.EventChannel.StreamHandler;
 import io.flutter.embedding.engine.plugins.lifecycle.FlutterLifecycleAdapter;
@@ -53,10 +52,7 @@ public class FlutterBarcodeScannerPlugin implements MethodCallHandler, ActivityR
     private EventChannel eventChannel;
 
     /**
-     * V2 embedding
-     *
-     * @param activity
-     * @param registrar
+     * V2 embedding fields
      */
     private MethodChannel channel;
     private FlutterPluginBinding pluginBinding;
@@ -67,26 +63,6 @@ public class FlutterBarcodeScannerPlugin implements MethodCallHandler, ActivityR
     private LifeCycleObserver observer;
 
     public FlutterBarcodeScannerPlugin() {
-    }
-
-    private FlutterBarcodeScannerPlugin(FlutterFragmentActivity activity, final PluginRegistry.Registrar registrar) {
-        FlutterBarcodeScannerPlugin.activity = activity;
-    }
-
-    /**
-     * Plugin registration.
-     */
-    public static void registerWith(final PluginRegistry.Registrar registrar) {
-        if (registrar.activity() == null) {
-            return;
-        }
-        Activity activity = registrar.activity();
-        Application applicationContext = null;
-        if (registrar.context() != null) {
-            applicationContext = (Application) (registrar.context().getApplicationContext());
-        }
-        FlutterBarcodeScannerPlugin instance = new FlutterBarcodeScannerPlugin((FlutterFragmentActivity) registrar.activity(), registrar);
-        instance.createPluginSetup(registrar.messenger(), applicationContext, activity, registrar, null);
     }
 
     @Override
@@ -235,14 +211,12 @@ public class FlutterBarcodeScannerPlugin implements MethodCallHandler, ActivityR
      * @param messenger
      * @param applicationContext
      * @param activity
-     * @param registrar
      * @param activityBinding
      */
     private void createPluginSetup(
             final BinaryMessenger messenger,
             final Application applicationContext,
             final Activity activity,
-            final PluginRegistry.Registrar registrar,
             final ActivityPluginBinding activityBinding) {
 
 
@@ -255,19 +229,12 @@ public class FlutterBarcodeScannerPlugin implements MethodCallHandler, ActivityR
         this.applicationContext = applicationContext;
         channel = new MethodChannel(messenger, CHANNEL);
         channel.setMethodCallHandler(this);
-        if (registrar != null) {
-            // V1 embedding setup for activity listeners.
-            observer = new LifeCycleObserver(activity);
-            applicationContext.registerActivityLifecycleCallbacks(
-                    observer); // Use getApplicationContext() to avoid casting failures.
-            registrar.addActivityResultListener(this);
-        } else {
-            // V2 embedding setup for activity listeners.
-            activityBinding.addActivityResultListener(this);
-            lifecycle = FlutterLifecycleAdapter.getActivityLifecycle(activityBinding);
-            observer = new LifeCycleObserver(activity);
-            lifecycle.addObserver(observer);
-        }
+        
+        // V2 embedding setup for activity listeners.
+        activityBinding.addActivityResultListener(this);
+        lifecycle = FlutterLifecycleAdapter.getActivityLifecycle(activityBinding);
+        observer = new LifeCycleObserver(activity);
+        lifecycle.addObserver(observer);
     }
 
     @Override
@@ -277,7 +244,6 @@ public class FlutterBarcodeScannerPlugin implements MethodCallHandler, ActivityR
                 pluginBinding.getBinaryMessenger(),
                 (Application) pluginBinding.getApplicationContext(),
                 activityBinding.getActivity(),
-                null,
                 activityBinding);
     }
 
@@ -298,15 +264,13 @@ public class FlutterBarcodeScannerPlugin implements MethodCallHandler, ActivityR
         channel.setMethodCallHandler(null);
         eventChannel.setStreamHandler(null);
         channel = null;
-        applicationContext.unregisterActivityLifecycleCallbacks(observer);
         applicationContext = null;
     }
 
     /**
      * Activity lifecycle observer
      */
-    private class LifeCycleObserver
-            implements Application.ActivityLifecycleCallbacks, DefaultLifecycleObserver {
+    private class LifeCycleObserver implements DefaultLifecycleObserver {
         private final Activity thisActivity;
 
         LifeCycleObserver(Activity activity) {
@@ -331,46 +295,10 @@ public class FlutterBarcodeScannerPlugin implements MethodCallHandler, ActivityR
 
         @Override
         public void onStop(@NonNull LifecycleOwner owner) {
-            onActivityStopped(thisActivity);
         }
 
         @Override
         public void onDestroy(@NonNull LifecycleOwner owner) {
-            onActivityDestroyed(thisActivity);
-        }
-
-        @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        }
-
-        @Override
-        public void onActivityStarted(Activity activity) {
-        }
-
-        @Override
-        public void onActivityResumed(Activity activity) {
-        }
-
-        @Override
-        public void onActivityPaused(Activity activity) {
-        }
-
-        @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-        }
-
-        @Override
-        public void onActivityDestroyed(Activity activity) {
-            if (thisActivity == activity && activity.getApplicationContext() != null) {
-                ((Application) activity.getApplicationContext())
-                        .unregisterActivityLifecycleCallbacks(
-                                this);
-            }
-        }
-
-        @Override
-        public void onActivityStopped(Activity activity) {
-
         }
     }
 }
